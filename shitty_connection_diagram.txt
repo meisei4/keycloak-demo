@@ -1,0 +1,38 @@
++---------------+       +------------+       +-----------+       +--------------+
+| API Requests  |       | Flask Api  |       | Keycloak  |       | Infinispan   |
+|               |       | endpoint   |       |           |       | Cache        |
++------+--------+       +-----+------+       +-----+-----+       +------+-------+
+       |                      |                    |                    |
+       |  GET /protected      |                    |                    |
+       |--------------------->|                    |                    |
+       | https://<host>:5000/protected             |                    |
+       |                      |                    |                    |
+       |                      | Redirect(?) to     |                    |
+       |                      | Keycloak GET       |                    |
+       |                      |------------------->|                    |
+       |                      | http://<host>:8080/auth/...             |
+       |                      |                    |                    |
+       |                      |                    |<------------------>|
+       |                      |                    | Validates User     |
+       |                      |                    | Credentials (cache)|
+       |                      |                    |                    |
+       |                      | POST :8080/.../token                    |
+       |                      | Keycloak           |                    |
+       |                      |------------------->|                    |
+       |                      | http://<host>:8080/realms/...openid-connect/token
+       |                      |                    |                    |
+       |                      | (5) Token Response |                    |
+       |                      |<-------------------|                    |
+       |                      |Access Token gets   |                    |
+       |                      |authenticated       |                    |
+       |                      |or decoded(?)       |                    |
+       |                      |                    |                    |
+       |                      |                    |                    |
+       | API Access Granted   |                    |                    |
+       | (success code: 200)  |                    |                    |
+       |<---------------------|                    |                    |
+       |                      |                    |                    |
++------+--------+       +-----+------+       +-----+-----+       +------+-------+
+| User          |       | Flask Api  |       | Keycloak  |       | Infinispan   |
+|               |       | endpoint   |       |           |       | Cache        |
++---------------+       +------------+       +-----------+       +--------------+

@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.6
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+        - ./realm-config.json:/opt/keycloak/data/import/realm.json:ro
+    ports:
+      - "8080:8080"
+    command: ["start-dev", "--import-realm"]
+
+  postgres-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: keycloak_db
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  keycloak-flask-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - keycloak
+
+volumes:
+  postgres_data:
