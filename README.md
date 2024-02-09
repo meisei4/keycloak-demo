@@ -1,3 +1,5 @@
+## Keycloak basic example
+
 The project consists of three main services:
 
 - **Keycloak**: An open-source Identity and Access Management securing API endpoints.
