@@ -1,3 +1,49 @@
+
+
+## somethings wrong (also why does it take a minute)
+keycloak1 log:
+```log
+2024-02-13 11:46:09,623 INFO  [org.infinispan.CLUSTER] (Shutdown thread) ISPN000080: Disconnecting JGroups channel `ISPN`
+2024-02-13 11:46:09,648 INFO  [io.quarkus] (Shutdown thread) Keycloak stopped in 0.073s
+```
+
+keycloak2 log:
+
+```log
+2024-02-13 11:46:09,584 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=authenticationSessions] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,594 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=sessions] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,598 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=clientSessions] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,601 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=work] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,603 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=org.infinispan.PERMISSIONS] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,605 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=loginFailures] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,608 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=offlineClientSessions] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,613 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=org.infinispan.ROLES] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,615 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=org.infinispan.CONFIG] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,618 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=offlineSessions] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,621 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) [Context=actionTokens] ISPN100008: Updating cache members list [5ba9978151c0-9578], topology id 21
+2024-02-13 11:46:09,625 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) ISPN000094: Received new cluster view for channel ISPN: [5ba9978151c0-9578|8] (1) [5ba9978151c0-9578]
+2024-02-13 11:46:09,626 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) ISPN100001: Node 0eeb92f29b3d-3460 left the cluster
+2024-02-13 11:46:09,626 INFO  [org.infinispan.CLUSTER] (jgroups-22,5ba9978151c0-9578) ISPN100001: Node 0eeb92f29b3d-3460 left the cluster
+```
+
+
+pytest log: 
+```log
+[2024-02-13 20:46:08,719] [INFO] [MainThread] Obtaining token for admin...
+[2024-02-13 20:46:09,364] [INFO] [MainThread] Creating Keycloak user 'testuser'...
+[2024-02-13 20:46:09,490] [INFO] [MainThread] User 'testuser' created successfully.
+[2024-02-13 20:46:09,491] [INFO] [MainThread] stop keycloak1 container
+[2024-02-13 20:46:10,012] [INFO] [MainThread] Verifying user existence post-failover
+[2024-02-13 20:46:10,012] [INFO] [MainThread] Obtaining token for admin...
+[2024-02-13 20:47:10,113] [INFO] [MainThread] Test passed: User exists and is accessible even after keycloak1 failover.
+[2024-02-13 20:47:10,113] [INFO] [MainThread] Obtaining token for admin...
+[2024-02-13 20:47:10,155] [INFO] [MainThread] Deleting Keycloak user 'testuser'...
+[2024-02-13 20:47:10,202] [INFO] [MainThread] User 'testuser' deleted successfully.
+```
+
+
+
+
 ## Keycloak basic example
 
 The project consists of three main services:
@@ -75,5 +121,13 @@ To run tests:
 - **Docker Compose File**: Orchestrates the setup of Keycloak, PostgreSQL, and the Flask api.
 - **Flask api**: Demonstrates how to implement a secure route with Keycloak token authentication.
 - **Keycloak realm json file**: Includes setting up realms, clients, (I wasn't able to figure out how to import the user here so i just create it with the keycloak python library)
-- **Tests**: Validates the protected route's accessibility with an authenticated token.
+- **Tests**: Validates the protected route's accessibility with an authenticated token. 
 
+
+resources:
+https://www.keycloak.org/server/all-config#_database
+https://www.keycloak.org/server/configuration#_formats_for_environment_variables
+https://hub.docker.com/r/jboss/keycloak/ (cli stuff for JDBC ping?)
+https://infinispan.org/docs/stable/titles/configuring/configuring.html
+https://www.keycloak.org/high-availability/introduction
+https://www.keycloak.org/server/caching

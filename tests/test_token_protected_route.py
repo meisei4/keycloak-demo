@@ -1,4 +1,5 @@
 import requests
+import subprocess
 from conftest import logger, TEST_CLIENT_ID, TEST_REALM_NAME, CLIENT_SECRET, KEYCLOAK_URL, TEST_USER, TEST_PASS, \
     FLASK_APP_URL
 
@@ -8,6 +9,7 @@ def send_request(method, url, **kwargs):
     if not response.ok:
         logger.info(f"Request failed. Status code: {response.status_code}, Response: {response.text}")
     return response
+
 
 def get_token(client_id, realm_name, username, password, grant_type="password", client_secret=None):
     logger.info(f"Obtaining token for {username}...")
@@ -24,11 +26,14 @@ def get_token(client_id, realm_name, username, password, grant_type="password", 
     response = send_request("POST", token_url, data=payload)
     return response.json().get("access_token") if response.ok else None
 
+
 def get_keycloak_admin_token():
     return get_token("admin-cli", "master", "admin", "admin")
 
+
 def get_user_access_token(username, password):
     return get_token(TEST_CLIENT_ID, TEST_REALM_NAME, username, password, client_secret=CLIENT_SECRET)
+
 
 def create_keycloak_user(admin_token, username, password):
     logger.info(f"Creating Keycloak user '{username}'...")
@@ -46,7 +51,13 @@ def create_keycloak_user(admin_token, username, password):
                             f"{KEYCLOAK_URL}/admin/realms/{TEST_REALM_NAME}/users",
                             headers=headers,
                             json=payload)
-    return response.status_code == 201
+    if response.ok:
+        logger.info(f"User '{username}' created successfully.")
+        return True
+    else:
+        logger.error(
+            f"Failed to create user '{username}'. Status code: {response.status_code}, Response: {response.text}")
+        return False
 
 
 def delete_keycloak_user(admin_token, username):
@@ -54,14 +65,21 @@ def delete_keycloak_user(admin_token, username):
     headers = {"Authorization": f"Bearer {admin_token}"}
     search_response = send_request("GET", f"{KEYCLOAK_URL}/admin/realms/{TEST_REALM_NAME}/users?username={username}",
                                    headers=headers)
-
     if search_response.ok:
         user_id = search_response.json()[0]['id']
         delete_response = send_request("DELETE", f"{KEYCLOAK_URL}/admin/realms/{TEST_REALM_NAME}/users/{user_id}",
                                        headers=headers)
-
-        return delete_response.status_code in [204, 404]
-    return False
+        if delete_response.ok:
+            logger.info(f"User '{username}' deleted successfully.")
+            return True
+        else:
+            logger.error(
+                f"Failed to delete user '{username}'. Status code: {delete_response.status_code}, Response: {delete_response.text}")
+            return False
+    else:
+        logger.error(
+            f"Failed to find user '{username}' for deletion. Status code: {search_response.status_code}, Response: {search_response.text}")
+        return False
 
 
 def test_access_protected_route():
@@ -82,9 +100,52 @@ def test_access_protected_route():
                                           verify=False)
 
         assert protected_response.status_code == 200, "Expected status code 200."
-        assert "Access granted to protected route" in protected_response.json().get("message", ""), "Access to protected route was not granted."
+        assert "Access granted to protected route" in protected_response.json().get("message",
+                                                                                    ""), "Access to protected route was not granted."
         logger.info("Test passed: Access to protected route confirmed.")
     finally:
         if user_created:
             delete_keycloak_user(admin_token, TEST_USER)
 
+
+def stop_container(container_name):
+    subprocess.check_call(['docker', 'stop', container_name])
+
+
+def start_container(container_name):
+    subprocess.check_call(['docker', 'start', container_name])
+
+
+def test_failover_test():
+    admin_token = get_keycloak_admin_token()
+    assert admin_token, "Failed to obtain admin token."
+
+    user_created = create_keycloak_user(admin_token, TEST_USER, TEST_PASS)
+    assert user_created, "Failed to create test user."
+
+    try:
+        logger.info("stop keycloak1 container")
+        stop_container("keycloak-demo-keycloak1-1")
+
+        logger.info("Verifying user existence post-failover")
+        # Get a fresh admin token since the old one might be invalid due to failover
+        admin_token_refreshed = get_keycloak_admin_token()
+        assert admin_token_refreshed, "Failed to obtain refreshed admin token."
+        headers = {"Authorization": f"Bearer {admin_token_refreshed}"}
+        user_url = f"{KEYCLOAK_URL}/admin/realms/{TEST_REALM_NAME}/users?username={TEST_USER}"
+        response = requests.get(user_url, headers=headers)
+
+        assert response.status_code == 200, "Failed to verify user existence post-failover."
+        users = response.json()
+        assert any(user['username'] == TEST_USER for user in users), "Test user does not exist post-failover."
+
+        logger.info("Test passed: User exists and is accessible even after keycloak1 failover.")
+    finally:
+        # Cleanup: attempt to delete the test user
+        if user_created:
+            admin_token_refreshed = get_keycloak_admin_token()
+            assert admin_token_refreshed, "Failed to obtain refreshed admin token."
+            success = delete_keycloak_user(admin_token_refreshed, TEST_USER)
+            assert success, "Failed to delete test user."
+
+        # start_container("keycloak-demo-keycloak1-1")

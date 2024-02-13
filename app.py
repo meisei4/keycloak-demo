@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, Blueprint
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from keycloak import KeycloakOpenID
 import logging
 
@@ -13,14 +13,14 @@ logger = logging.getLogger(__name__)
 # Application and Configuration
 # -------------------
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@postgres-db/keycloak_db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@postgres-db/keycloak_db'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # -------------------
 # Extensions Initialization
 # -------------------
-db = SQLAlchemy(app)
-keycloak_openid = KeycloakOpenID(server_url="http://keycloak:8080/",
+# db = SQLAlchemy(app)
+keycloak_openid = KeycloakOpenID(server_url="http://nginx/",
                                  client_id="test-client",
                                  realm_name="test-realm",
                                  client_secret_key="GgrHBKUSS4JpomAtQK1ex7Px8rYWywQU")
@@ -28,10 +28,10 @@ keycloak_openid = KeycloakOpenID(server_url="http://keycloak:8080/",
 # -------------------
 # Database Models
 # -------------------
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    pw_hash = db.Column(db.String(80))
+# class User(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     username = db.Column(db.String(80), unique=True, nullable=False)
+#     pw_hash = db.Column(db.String(80))
 
 # -------------------
 # Blueprint and Routes
@@ -70,6 +70,6 @@ app.register_blueprint(api)
 # Main Entry Point
 # -------------------
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
     app.run(ssl_context='adhoc', host='0.0.0.0', debug=True)
