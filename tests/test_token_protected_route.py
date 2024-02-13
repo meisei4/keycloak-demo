@@ -3,13 +3,11 @@ import subprocess
 from conftest import logger, TEST_CLIENT_ID, TEST_REALM_NAME, CLIENT_SECRET, KEYCLOAK_URL, TEST_USER, TEST_PASS, \
     FLASK_APP_URL
 
-
 def send_request(method, url, **kwargs):
     response = requests.request(method, url, **kwargs)
     if not response.ok:
         logger.info(f"Request failed. Status code: {response.status_code}, Response: {response.text}")
     return response
-
 
 def get_token(client_id, realm_name, username, password, grant_type="password", client_secret=None):
     logger.info(f"Obtaining token for {username}...")
@@ -26,14 +24,11 @@ def get_token(client_id, realm_name, username, password, grant_type="password", 
     response = send_request("POST", token_url, data=payload)
     return response.json().get("access_token") if response.ok else None
 
-
 def get_keycloak_admin_token():
     return get_token("admin-cli", "master", "admin", "admin")
 
-
 def get_user_access_token(username, password):
     return get_token(TEST_CLIENT_ID, TEST_REALM_NAME, username, password, client_secret=CLIENT_SECRET)
-
 
 def create_keycloak_user(admin_token, username, password):
     logger.info(f"Creating Keycloak user '{username}'...")
@@ -59,7 +54,6 @@ def create_keycloak_user(admin_token, username, password):
             f"Failed to create user '{username}'. Status code: {response.status_code}, Response: {response.text}")
         return False
 
-
 def delete_keycloak_user(admin_token, username):
     logger.info(f"Deleting Keycloak user '{username}'...")
     headers = {"Authorization": f"Bearer {admin_token}"}
@@ -80,7 +74,6 @@ def delete_keycloak_user(admin_token, username):
         logger.error(
             f"Failed to find user '{username}' for deletion. Status code: {search_response.status_code}, Response: {search_response.text}")
         return False
-
 
 def test_access_protected_route():
     admin_token = get_keycloak_admin_token()
@@ -107,14 +100,11 @@ def test_access_protected_route():
         if user_created:
             delete_keycloak_user(admin_token, TEST_USER)
 
-
 def stop_container(container_name):
     subprocess.check_call(['docker', 'stop', container_name])
 
-
 def start_container(container_name):
     subprocess.check_call(['docker', 'start', container_name])
-
 
 def test_failover_test():
     admin_token = get_keycloak_admin_token()
