@@ -7,6 +7,9 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
+    depends_on:
+        - keycloak1
+        - keycloak2
 
   postgres-db:
     image: postgres:latest
@@ -24,16 +27,15 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres-db:5432/keycloak_db
       KC_DB_USERNAME: username
       KC_DB_PASSWORD: password
     volumes:
-      - ./realm-config.json:/opt/keycloak/data/import/realm.json:ro
+      - ./realm-export.json:/opt/keycloak/data/import/realm.json:ro
     ports:
       - "8080:8080" # Expose Keycloak 1's default port (8080) to the host on port 8080
-    command: ["start-dev", "--import-realm", "--cache-config-file=cache-ispn.xml"]
+    command: ["start-dev", "--import-realm", "--cache-config-file=cache-ispn.xml", '--log-level=org.infinispan.CLUSTER:debug']
     depends_on:
       - postgres-db
 
@@ -50,14 +52,14 @@ services:
       - ./realm-config.json:/opt/keycloak/data/import/realm.json:ro
     ports:
       - "8081:8080" # Expose Keycloak on a different port (8081) to avoid conflict with keycloak1
-    command: ["start-dev", "--cache-config-file=cache-ispn.xml"]
+    command: ["start-dev", "--cache-config-file=cache-ispn.xml", '--log-level=org.infinispan.CLUSTER:debug']
     depends_on:
       - postgres-db
 
   keycloak-flask-app:
     build:
       context: .
-      dockerfile: flask_app/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
 

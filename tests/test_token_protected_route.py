@@ -98,7 +98,8 @@ def test_access_protected_route():
         logger.info("Test passed: Access to protected route confirmed.")
     finally:
         if user_created:
-            delete_keycloak_user(admin_token, TEST_USER)
+            logger.info("delete")
+            # delete_keycloak_user(admin_token, TEST_USER)
 
 def stop_container(container_name):
     subprocess.check_call(['docker', 'stop', container_name])
@@ -106,7 +107,8 @@ def stop_container(container_name):
 def start_container(container_name):
     subprocess.check_call(['docker', 'start', container_name])
 
-def test_failover_test():
+def test_basic_failover():
+    # authentification
     admin_token = get_keycloak_admin_token()
     assert admin_token, "Failed to obtain admin token."
 
@@ -138,4 +140,59 @@ def test_failover_test():
             success = delete_keycloak_user(admin_token_refreshed, TEST_USER)
             assert success, "Failed to delete test user."
 
+        # start_container("keycloak-demo-keycloak1-1")
+
+def login_as_user(username, password, client_id):
+    login_url = f"{KEYCLOAK_URL}/realms/{TEST_REALM_NAME}/protocol/openid-connect/token"
+    login_response = requests.post(login_url, data={
+        "username": username,
+        "password": password,
+        "client_id": client_id,
+        "grant_type": "password",
+    })
+    if login_response.status_code == 200:
+        return login_response.json()['access_token']
+    else:
+        logger.info(f"Failed to log in as user {username}. Status code: {login_response.status_code}")
+        return None
+
+def test_session_failover():
+    # Obtain admin token to perform admin operations
+    admin_token = get_keycloak_admin_token()
+    assert admin_token, "Failed to obtain admin token."
+
+    # Create a new user in Keycloak
+    user_created = create_keycloak_user(admin_token, TEST_USER, TEST_PASS)
+    assert user_created, "Failed to create test user."
+
+    try:
+        # Obtain access token for the created user
+        access_token = get_user_access_token(TEST_USER, TEST_PASS)
+        assert access_token, "Failed to obtain access token for test user."
+
+        # Define headers for authorization with the obtained access token
+        headers = {"Authorization": f"Bearer {access_token}"}
+
+        # Access a protected route or resource before failover to confirm access
+        userinfo_url = f"{KEYCLOAK_URL}/realms/{TEST_REALM_NAME}/account/#/"
+        pre_failover_response = send_request("GET", userinfo_url, headers=headers)
+        assert pre_failover_response.status_code == 200, "Could not access user info before failover."
+
+        # Simulate failover by stopping the Keycloak container
+        logger.info("Stopping keycloak1 container")
+        stop_container("keycloak-demo-keycloak1-1")
+
+        # Attempt to access the protected route again with the same access token to verify session persistence
+        post_failover_response = send_request("GET", userinfo_url, headers=headers)
+        assert post_failover_response.status_code == 200, "Session did not persist through failover."
+
+        logger.info("Test passed: User session persisted and protected route access confirmed after failover.")
+    finally:
+        # Cleanup: Delete the test user
+        if user_created:
+            admin_token_refreshed = get_keycloak_admin_token()
+            success = delete_keycloak_user(admin_token_refreshed, TEST_USER)
+            assert success, "Failed to delete test user."
+
+        # Optionally, restart the stopped Keycloak instance for cleanup
         # start_container("keycloak-demo-keycloak1-1")

@@ -10,7 +10,7 @@ app = Flask(__name__)
 keycloak_openid = KeycloakOpenID(server_url="http://nginx/",
                                  client_id="test-client",
                                  realm_name="test-realm",
-                                 client_secret_key="GgrHBKUSS4JpomAtQK1ex7Px8rYWywQU")
+                                 client_secret_key="AO1fL9G4DoUIjlhBz3oQd8ceP0fKWaDK")
 
 api = Blueprint('api', __name__)
 
