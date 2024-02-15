@@ -5,7 +5,7 @@ FLASK_APP_URL = "https://127.0.0.1:5000"
 
 TEST_REALM_NAME = "test-realm"
 TEST_CLIENT_ID = "test-client"
-CLIENT_SECRET = "AO1fL9G4DoUIjlhBz3oQd8ceP0fKWaDK"
+CLIENT_SECRET = "DfszfQqJ2gFh8wuda5RMPrfwdqyiQ7Ax"
 TEST_USER = "testuser"
 TEST_PASS = "testpass"
 

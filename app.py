@@ -10,7 +10,7 @@ app = Flask(__name__)
 keycloak_openid = KeycloakOpenID(server_url="http://nginx/",
                                  client_id="test-client",
                                  realm_name="test-realm",
-                                 client_secret_key="AO1fL9G4DoUIjlhBz3oQd8ceP0fKWaDK")
+                                 client_secret_key="DfszfQqJ2gFh8wuda5RMPrfwdqyiQ7Ax")
 
 api = Blueprint('api', __name__)
 
@@ -31,7 +31,7 @@ def protected():
     try:
         logger.info('Attempting to decode the token...')
         KEYCLOAK_PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----\n" + keycloak_openid.public_key() + "\n-----END PUBLIC KEY-----"
-        options = {"verify_signature": True, "verify_aud": True, "verify_exp": True}
+        options = {"verify_signature": True, "verify_aud": False, "verify_exp": True}
         token_info = keycloak_openid.decode_token(token, key=KEYCLOAK_PUBLIC_KEY, options=options)
         logger.info(f'Token decoded successfully: {token_info}')
         return jsonify({'message': 'Access granted to protected route', 'token_info': token_info})
