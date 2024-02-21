@@ -1,0 +1,3 @@
+FROM quay.io/keycloak/keycloak:23.0.6
+
+COPY ian-cache-ispn.xml /opt/keycloak/conf/ian-cache-ispn.xml

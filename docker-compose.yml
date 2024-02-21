@@ -4,6 +4,7 @@ networks:
   keycloak1:
   keycloak2:
 
+
 services:
   nginx:
     networks:
@@ -33,9 +34,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   keycloak1:
+    build:
+      context: .
+      dockerfile: Dockerfile-keycloak
     networks:
       - keycloak1
-    image: quay.io/keycloak/keycloak:23.0.6
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -47,14 +50,17 @@ services:
       - ./realm-export.json:/opt/keycloak/data/import/realm.json:ro
     ports:
       - "8080:8080" # Expose Keycloak 1's default port (8080) to the host on port 8080
-    command: ["start-dev", "--import-realm", "--cache-config-file=cache-ispn.xml", '--log-level=org.infinispan.CLUSTER:debug']
+      - "7800:7800" # how does this reach JGroup??? wtf
+    command: ["start-dev", "--import-realm", "--cache-config-file=ian-cache-ispn.xml", '--log-level=org.infinispan.CLUSTER:debug']
     depends_on:
       - postgres-db
 
   keycloak2:
+    build:
+      context: .
+      dockerfile: Dockerfile-keycloak
     networks:
       - keycloak2
-    image: quay.io/keycloak/keycloak:23.0.6
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -64,15 +70,15 @@ services:
       KC_DB_PASSWORD: password
     ports:
       - "8081:8080" # Expose Keycloak on a different port (8081) to avoid conflict with keycloak1
-    # "--cache-config-file=cache-ispn.xml",
-    command: ["start-dev", "--cache-config-file=cache-ispn.xml", '--log-level=org.infinispan.CLUSTER:debug']
+      - "7801:7800"
+    command: ["start-dev", "--cache-config-file=ian-cache-ispn.xml", '--log-level=org.infinispan.CLUSTER:debug']
     depends_on:
       - postgres-db
 
   keycloak-flask-app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-app
     ports:
       - "5000:5000"
 

@@ -1,6 +1,4 @@
 
-
-## somethings wrong (also why does it take a minute)
 keycloak1 log:
 ```log
 2024-02-13 11:46:09,623 INFO  [org.infinispan.CLUSTER] (Shutdown thread) ISPN000080: Disconnecting JGroups channel `ISPN`
@@ -127,7 +125,14 @@ To run tests:
 resources:
 https://www.keycloak.org/server/all-config#_database
 https://www.keycloak.org/server/configuration#_formats_for_environment_variables
-https://hub.docker.com/r/jboss/keycloak/ (cli stuff for JDBC ping?)
 https://infinispan.org/docs/stable/titles/configuring/configuring.html
 https://www.keycloak.org/high-availability/introduction
 https://www.keycloak.org/server/caching
+
+https://infinispan.org/docs/stable/titles/server/server.html#discovery-tcpping_cluster-transport
+
+https://infinispan.org/docs/stable/titles/server/server.html#using-inline-jgroups-stacks_cluster-transport
+
+http://www.jgroups.org/manual4/index.html#TCPPING_Prot
+
+http://www.jgroups.org/manual4/index.html#TCPPING
