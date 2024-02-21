@@ -136,3 +136,5 @@ https://infinispan.org/docs/stable/titles/server/server.html#using-inline-jgroup
 http://www.jgroups.org/manual4/index.html#TCPPING_Prot
 
 http://www.jgroups.org/manual4/index.html#TCPPING
+
+https://www.keycloak.org/server/hostname

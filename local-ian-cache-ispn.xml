@@ -23,7 +23,7 @@
     <jgroups>
         <stack name="ian_minimal_tcp">
             <TCP bind_port="7800" />
-            <TCPPING initial_hosts_str="host.docker.internal[7800], localhost[7800]"
+            <TCPPING initial_hosts_str="localhost[7800], localhost[7801]"
                      port_range="1"/>
         </stack>
     </jgroups>
