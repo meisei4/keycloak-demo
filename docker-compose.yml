@@ -2,10 +2,6 @@ version: '3.8'
 
 networks:
   keycloak1:
-    ipam:
-      config:
-        - subnet: 172.20.0.0/24
-
 
 services:
   nginx:
@@ -38,8 +34,7 @@ services:
       context: .
       dockerfile: Dockerfile-keycloak
     networks:
-      keycloak1:
-        ipv4_address: 172.20.0.3
+      - keycloak1
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -50,8 +45,8 @@ services:
     volumes:
       - ./realm-export.json:/opt/keycloak/data/import/realm.json:ro
     ports:
-      - "8081:8080" # Expose Keycloak 1's default port (8080) to the host on port 8080
-      - "7801:7800" # left inside my pc localhost:7801,  : right docker thus localhost:7800
+      - "8081:8080"
+      - "7801:7800"
     command: ["start-dev", "--import-realm", "--cache-config-file=ian-cache-ispn.xml", '--log-level=org.infinispan.CLUSTER:debug']
     depends_on:
       - postgres-db
@@ -65,12 +60,12 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres-db:5432/keycloak_db
+      KC_DB_URL: jdbc:postgresql://localhost:5432/keycloak_db
       KC_DB_USERNAME: username
       KC_DB_PASSWORD: password
     ports:
-      - "8080" # only the docker host port exposed
-      - "7800" # just localhost:7800
+      - "8080"
+      - "7800"
     command: ["start-dev", "--cache-config-file=local-ian-cache-ispn.xml", '--log-level=org.infinispan.CLUSTER:debug']
     depends_on:
       - postgres-db

@@ -138,3 +138,5 @@ http://www.jgroups.org/manual4/index.html#TCPPING_Prot
 http://www.jgroups.org/manual4/index.html#TCPPING
 
 https://www.keycloak.org/server/hostname
+
+https://github.com/infinispan/infinispan/blob/main/core/src/main/resources/default-configs/default-jgroups-tcp.xml
