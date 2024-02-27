@@ -140,3 +140,7 @@ http://www.jgroups.org/manual4/index.html#TCPPING
 https://www.keycloak.org/server/hostname
 
 https://github.com/infinispan/infinispan/blob/main/core/src/main/resources/default-configs/default-jgroups-tcp.xml
+
+https://docs.docker.com/network/drivers/host/
+
+https://docs.docker.com/network/network-tutorial-host/
