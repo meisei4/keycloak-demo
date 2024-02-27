@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 #keycloak_openid = KeycloakOpenID(server_url="http://192.168.1.10/", # linux doesnt know host.internal.docker apparently
-keycloak_openid = KeycloakOpenID(server_url="http://host.docker.internal/", # works for macOS and Windows docker desktop
+keycloak_openid = KeycloakOpenID(server_url="http://nginx/", # works for macOS and Windows docker desktop
                                  client_id="test-client",
                                  realm_name="test-realm",
                                  client_secret_key="DfszfQqJ2gFh8wuda5RMPrfwdqyiQ7Ax")

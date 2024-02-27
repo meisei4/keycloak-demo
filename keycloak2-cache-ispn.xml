@@ -5,9 +5,9 @@
         xmlns="urn:infinispan:config:14.0">
     <jgroups>
         <stack name="ian_minimal_tcp">
-            <TCP bind_addr="NON_LOOPBACK" bind_port="7800" />
+            <TCP bind_addr="192.168.30.5" bind_port="7800" />
             <RED/>
-            <TCPPING initial_hosts="host.docker.internal[7800]"
+            <TCPPING initial_hosts= "192.168.30.4[7800]"
                      port_range="1"/>
             <MERGE3 min_interval="10000"
                     max_interval="30000"/>
