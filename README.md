@@ -144,3 +144,22 @@ https://github.com/infinispan/infinispan/blob/main/core/src/main/resources/defau
 https://docs.docker.com/network/drivers/host/
 
 https://docs.docker.com/network/network-tutorial-host/
+
+
+logs for when TCPPING host is incorrect (TCP requires explicit ip for discovery, it doesnt discover beyond that provided IP)
+```log
+2024-02-27 14:16:50 2024-02-27 05:16:50,623 WARN  [org.infinispan.PERSISTENCE] (keycloak-cache-init) ISPN000554: jboss-marshalling is deprecated and planned for removal
+2024-02-27 14:16:51 2024-02-27 05:16:51,475 INFO  [org.infinispan.CONTAINER] (keycloak-cache-init) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
+2024-02-27 14:16:53 2024-02-27 05:16:53,927 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000078: Starting JGroups channel `ISPN` with stack `ian_minimal_tcp`
+2024-02-27 14:16:53 2024-02-27 05:16:53,938 INFO  [org.jgroups.JChannel] (keycloak-cache-init) local_addr: 2b5f58e7-01ea-4845-87d6-d262a372084b, name: fd56c8ccb848-50546
+2024-02-27 14:16:56 2024-02-27 05:16:56,996 INFO  [org.jgroups.protocols.pbcast.GMS] (keycloak-cache-init) fd56c8ccb848-50546: no members discovered after 3006 ms: creating cluster as coordinator
+2024-02-27 14:16:57 2024-02-27 05:16:57,128 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000094: Received new cluster view for channel ISPN: [fd56c8ccb848-50546|0] (1) [fd56c8ccb848-50546]
+2024-02-27 14:16:58 2024-02-27 05:16:58,574 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000079: Channel `ISPN` local address is `fd56c8ccb848-50546`, physical addresses are `[192.168.30.5:7800]`
+2024-02-27 14:16:58 2024-02-27 05:16:58,657 WARN  [org.infinispan.CONFIG] (keycloak-cache-init) ISPN000569: Unable to persist Infinispan internal caches as no global state enabled
+```
+logs for when proper IP is set:
+
+
+ETH blockchains study basics
+- write some local smart contracts
+- smart contract
