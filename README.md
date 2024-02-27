@@ -147,7 +147,7 @@ https://docs.docker.com/network/network-tutorial-host/
 
 
 logs for when TCPPING host is incorrect (TCP requires explicit ip for discovery, it doesnt discover beyond that provided IP)
-```log
+```commandline
 2024-02-27 14:16:50 2024-02-27 05:16:50,623 WARN  [org.infinispan.PERSISTENCE] (keycloak-cache-init) ISPN000554: jboss-marshalling is deprecated and planned for removal
 2024-02-27 14:16:51 2024-02-27 05:16:51,475 INFO  [org.infinispan.CONTAINER] (keycloak-cache-init) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
 2024-02-27 14:16:53 2024-02-27 05:16:53,927 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000078: Starting JGroups channel `ISPN` with stack `ian_minimal_tcp`
@@ -158,7 +158,38 @@ logs for when TCPPING host is incorrect (TCP requires explicit ip for discovery,
 2024-02-27 14:16:58 2024-02-27 05:16:58,657 WARN  [org.infinispan.CONFIG] (keycloak-cache-init) ISPN000569: Unable to persist Infinispan internal caches as no global state enabled
 ```
 logs for when proper IP is set:
-
+```commandline
+2024-02-27 03:18:28,356 WARN  [org.infinispan.PERSISTENCE] (keycloak-cache-init) ISPN000554: jboss-marshalling is deprecated and planned for removal
+2024-02-27 03:18:28,457 INFO  [org.infinispan.CONTAINER] (keycloak-cache-init) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
+2024-02-27 03:18:28,667 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000078: Starting JGroups channel `ISPN` with stack `ian_minimal_tcp`
+2024-02-27 03:18:28,669 INFO  [org.jgroups.JChannel] (keycloak-cache-init) local_addr: 0a239b1d-1df7-419f-b661-51af57788939, name: 4db62eccdf6d-61094
+2024-02-27 03:18:28,752 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
+2024-02-27 03:18:34,947 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000094: Received new cluster view for channel ISPN: [ff1c91465345-51196|1] (2) [ff1c91465345-51196, 4db62eccdf6d-61094]
+2024-02-27 03:18:34,991 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000079: Channel `ISPN` local address is `4db62eccdf6d-61094`, physical addresses are `[192.168.30.4:7800]`
+2024-02-27 03:18:35,008 WARN  [org.infinispan.CONFIG] (keycloak-cache-init) ISPN000569: Unable to persist Infinispan internal caches as no global state enabled
+2024-02-27 03:18:35,147 INFO  [org.infinispan.LIFECYCLE] (jgroups-5,ISPN,4db62eccdf6d-61094) [Context=org.infinispan.PERMISSIONS] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,173 INFO  [org.infinispan.LIFECYCLE] (non-blocking-thread--p2-t5) [Context=org.infinispan.PERMISSIONS] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+2024-02-27 03:18:35,193 INFO  [org.infinispan.LIFECYCLE] (jgroups-6,ISPN,4db62eccdf6d-61094) [Context=org.infinispan.ROLES] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,196 INFO  [org.infinispan.LIFECYCLE] (non-blocking-thread--p2-t8) [Context=org.infinispan.ROLES] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+2024-02-27 03:18:35,208 INFO  [org.infinispan.LIFECYCLE] (jgroups-11,ISPN,4db62eccdf6d-61094) [Context=org.infinispan.CONFIG] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,210 INFO  [org.infinispan.LIFECYCLE] (non-blocking-thread--p2-t14) [Context=org.infinispan.CONFIG] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+2024-02-27 03:18:35,286 INFO  [org.infinispan.LIFECYCLE] (jgroups-6,ISPN,4db62eccdf6d-61094) [Context=actionTokens] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,379 INFO  [org.infinispan.LIFECYCLE] (jgroups-11,ISPN,4db62eccdf6d-61094) [Context=actionTokens] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+2024-02-27 03:18:35,439 INFO  [org.infinispan.LIFECYCLE] (jgroups-6,ISPN,4db62eccdf6d-61094) [Context=authenticationSessions] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,442 INFO  [org.infinispan.LIFECYCLE] (jgroups-6,ISPN,4db62eccdf6d-61094) [Context=authenticationSessions] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+2024-02-27 03:18:35,518 INFO  [org.infinispan.LIFECYCLE] (jgroups-11,ISPN,4db62eccdf6d-61094) [Context=clientSessions] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,520 INFO  [org.infinispan.LIFECYCLE] (jgroups-6,ISPN,4db62eccdf6d-61094) [Context=clientSessions] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+2024-02-27 03:18:35,578 INFO  [org.infinispan.LIFECYCLE] (jgroups-11,ISPN,4db62eccdf6d-61094) [Context=loginFailures] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,581 INFO  [org.infinispan.LIFECYCLE] (jgroups-11,ISPN,4db62eccdf6d-61094) [Context=loginFailures] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+2024-02-27 03:18:35,623 INFO  [org.infinispan.LIFECYCLE] (jgroups-6,ISPN,4db62eccdf6d-61094) [Context=offlineClientSessions] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,626 INFO  [org.infinispan.LIFECYCLE] (jgroups-11,ISPN,4db62eccdf6d-61094) [Context=offlineClientSessions] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+2024-02-27 03:18:35,687 INFO  [org.infinispan.LIFECYCLE] (jgroups-11,ISPN,4db62eccdf6d-61094) [Context=offlineSessions] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,690 INFO  [org.infinispan.LIFECYCLE] (jgroups-6,ISPN,4db62eccdf6d-61094) [Context=offlineSessions] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+2024-02-27 03:18:35,749 INFO  [org.infinispan.LIFECYCLE] (jgroups-11,ISPN,4db62eccdf6d-61094) [Context=sessions] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,751 INFO  [org.infinispan.LIFECYCLE] (jgroups-6,ISPN,4db62eccdf6d-61094) [Context=sessions] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+2024-02-27 03:18:35,809 INFO  [org.infinispan.LIFECYCLE] (jgroups-6,ISPN,4db62eccdf6d-61094) [Context=work] ISPN100002: Starting rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], phase READ_OLD_WRITE_ALL, topology id 2
+2024-02-27 03:18:35,811 INFO  [org.infinispan.LIFECYCLE] (non-blocking-thread--p2-t13) [Context=work] ISPN100010: Finished rebalance with members [ff1c91465345-51196, 4db62eccdf6d-61094], topology id 2
+```
 
 ETH blockchains study basics
 - write some local smart contracts
